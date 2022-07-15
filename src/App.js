@@ -1,24 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Menu from './components/Menu';
+import Navbar from './components/Navbar';
+import { darkTheme, lightTheme } from './utils/Theme';
+import Video from './pages/Video';
+import Home from './pages/Home';
+import SignIn from './pages/Signin';
+
+const Container = styled.div`
+  display: flex;
+  color: ${({ theme }) => theme.text};
+`;
+const Main = styled.div`
+  flex: 7;
+  background-color: ${({ theme }) => theme.bg};
+`;
+const Wrapper = styled.div`
+  padding: 22px 72px;
+`;
 
 function App() {
+  const [darkMode, setDarkMode] = useState(true);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <Container className="App">
+        <BrowserRouter>
+          <Menu setDarkMode={setDarkMode} darkMode={darkMode} />
+          <Main>
+            <Navbar />
+            <Wrapper>
+              <Routes>
+                <Route path="/">
+                  <Route index element={<Home />} />
+                  <Route path="signin" element={<SignIn />} />
+                  <Route path="video">
+                    <Route path=":id" element={<Video />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </Wrapper>
+          </Main>
+        </BrowserRouter>
+      </Container>
+    </ThemeProvider>
   );
 }
 
